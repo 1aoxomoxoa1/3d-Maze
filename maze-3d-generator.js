@@ -1,16 +1,8 @@
 import Cell from "./cell-class.js";
-
+import MazeState from "./state-maze.js";
 
 class Maze3dGenerator{
 
-    // static directions = {
-    //     "LEFT": 0, //LEFT SAME LEVEL
-    //     "RIGHT": 1, //RIGHT SAME LEVEL
-    //     "FORWARD": 2, //UP SAME LEVEL 
-    //     "BACKWARD": 3, //DOWN SAME LEVEL
-    //     "UP": 4, //UP A FLOOR
-    //     "DOWN": 5 //DOWN A FLOOR
-    // }
 
     constructor() {
         if (this.constructor === Maze3dGenerator) {
@@ -38,6 +30,7 @@ class Maze3dGenerator{
                 for(let x = 0; x < this.n; x++){ //cols of the level (individual cells)
 
                     let myCell = new Cell([z, y, x]); 
+
 
                     for(let property in Cell.directions){
                         // 1) we need to check for same row, prior_cell.right and set === to currCell.left 
@@ -85,7 +78,9 @@ class Maze3dGenerator{
         let testObj = this.generate(); 
         let endTime = Date.now(); 
     
-        let milliSecondsDifference = currTime - endTime; //can concert to seconds with Math.floor(millis / 1000)
+        let milliSecondsDifference = endTime - currTime; //can concert to seconds with Math.floor(millis / 1000)
+        let secondsDiff = milliSecondsDifference / 1000
+        return `${secondsDiff}s`;
     }
 
     propertyIndexInvalid(level, row, col, property, size, levels){

@@ -80,6 +80,8 @@ class Sidewinder3dGen extends Maze3dGenerator{
         //set the start and end properties
         board[start[0]][start[1]][start[2]].start = true
         board[finish[0]][finish[1]][finish[2]].goal = true; 
+        board.start = board[start[0]][start[1]][start[2]]; 
+        board.goal = board[finish[0]][finish[1]][finish[2]];
 
 
         //path is carved with pathfinder algorithm, no need to redo here 

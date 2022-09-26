@@ -49,9 +49,11 @@ class SimpleMaze3dGenerator extends Maze3dGenerator{
             //setting the property values for start and end
             if(i === 0){
                 currCell.start = true;
+                board.start = currCell; 
             }else if(i === path.length - 2){
                 let nextCell = board[nextZ][nextY][nextX];
                 nextCell.goal = true; 
+                board.goal = nextCell; 
                 break; //no need to update walls because there is no cell after the goal cell
             }
 

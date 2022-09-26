@@ -45,9 +45,11 @@ class DFSMaze3dGenerator extends Maze3dGenerator{
             //setting the property values for start and end
             if(i === 0){
                 currCell.start = true;
+                board.start = board[currZ][currY][currX]; 
             }else if(i === path.length - 2){
                 let nextCell = board[nextZ][nextY][nextX];
                 nextCell.goal = true; 
+                board.goal = board[nextZ][nextY][nextX];
                 break; //no need to update walls because there is no cell after the goal cell
             }
 
@@ -93,10 +95,6 @@ class DFSMaze3dGenerator extends Maze3dGenerator{
         let current = start; 
 
         while (stack.length !== 0){
-            
-            //-------not sure if this needed ---------------
-            // testCurrent = [...current]; //copy the current
-            //----------------------------------------------   
             
             //when the current coords are equal to the finish coords
             if(JSON.stringify(current) === JSON.stringify(finish)){
