@@ -1,10 +1,9 @@
 class SearchAlgo{
 
-    constructor(property){
+    constructor(){
         if (this.constructor === SearchAlgo) {
             throw new Error('Abstract class search Algo cannot be instantiated');
         }
-        this.prop = property;
     }
     
 

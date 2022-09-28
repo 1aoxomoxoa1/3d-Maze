@@ -21,8 +21,9 @@ class DFSMaze3dGenerator extends Maze3dGenerator{
         //start & finish are like [2, 0, 1]
         let start = [Math.floor(Math.random() * this.levels), Math.floor(Math.random() * this.n), Math.floor(Math.random() * this.n)]
         let finish = [Math.floor(Math.random() * this.levels), Math.floor(Math.random() * this.n), Math.floor(Math.random() * this.n)]
-        console.log(start);
-        console.log(finish);
+        
+        // console.log(start);
+        // console.log(finish);
 
 
         //get the path with the dfs
@@ -30,7 +31,7 @@ class DFSMaze3dGenerator extends Maze3dGenerator{
         path = this.dfs(start, finish, path, board);
         console.log(path);
 
-        for(let i = 0; i < path.length - 1; i++){
+        for(let i = 0; i <= path.length - 1; i++){
             //get the coordinates for current and next step in path ; and current cell itself
             //we will break a wall in the currentCell  at the direction indicated of the the next step in the path 
             //also need to break a wall in the nextCell to mirror the other wall broken            
@@ -38,7 +39,10 @@ class DFSMaze3dGenerator extends Maze3dGenerator{
             let nextZ, nextY, nextX; 
 
             [currZ, currY, currX] = path[i]; 
-            [nextZ, nextY, nextX] = path[i + 1];
+
+            if(i !== path.length - 1){
+                [nextZ, nextY, nextX] = path[i + 1];
+            } 
 
             let currCell = board[currZ][currY][currX];
 
@@ -46,10 +50,9 @@ class DFSMaze3dGenerator extends Maze3dGenerator{
             if(i === 0){
                 currCell.start = true;
                 board.start = board[currZ][currY][currX]; 
-            }else if(i === path.length - 2){
-                let nextCell = board[nextZ][nextY][nextX];
-                nextCell.goal = true; 
-                board.goal = board[nextZ][nextY][nextX];
+            }else if(i === path.length - 1){
+                currCell.goal = true; 
+                board.goal = currCell;
                 break; //no need to update walls because there is no cell after the goal cell
             }
 

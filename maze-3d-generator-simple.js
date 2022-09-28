@@ -25,14 +25,14 @@ class SimpleMaze3dGenerator extends Maze3dGenerator{
         //start & finish are like [2, 0, 1]
         let start = [Math.floor(Math.random() * this.levels), Math.floor(Math.random() * this.n), Math.floor(Math.random() * this.n)]
         let finish = [Math.floor(Math.random() * this.levels), Math.floor(Math.random() * this.n), Math.floor(Math.random() * this.n)]
-        console.log(start);
-        console.log(finish);
+        // console.log(start);
+        // console.log(finish);
 
 
         //get the path with the dfs
         let path = []; 
         path = this.pathFinder(start, finish, start, path);
-        console.log(path);
+        // console.log(path);
 
         for(let i = 0; i < path.length - 1; i++){
             //get the coordinates for current and next step in path ; and current cell itself

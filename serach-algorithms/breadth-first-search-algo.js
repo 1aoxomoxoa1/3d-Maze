@@ -1,12 +1,11 @@
 import Cell from "../cell-class.js";
-import Searchable from "../searchable.js";
 import SearchAlgo from "./search-algo-base.js";
 import Node from "../node.js";
 
 
 class BreadthFirstSearch extends SearchAlgo{
 
-    constructor(startCoords, finishCoords, board){
+    constructor(){
         super(); 
         this.nodesVisited = undefined;
     }
@@ -75,7 +74,7 @@ class BreadthFirstSearch extends SearchAlgo{
     // //**
     //  * 
     //  * @param {*} neighbors -- [[direction, MazeState], ...] returned from successor func
-    //  * @param {*} visited -- [list of MazeStates] 
+    //  * @param {*} visited -- [set of MazeStates] 
     //  * @param {*} frontier -- [list of Nodes]
     //  * @returns -- [[direction, MazeState], ...] if it is not in visited or frontier
     //  */

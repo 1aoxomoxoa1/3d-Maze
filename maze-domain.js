@@ -13,15 +13,20 @@ class MazeDomain extends Searchable{
         this.board = threeDMaze.board; 
         this.initialState = undefined; 
         this.goalState = undefined; 
-        //go back in and intialize these states
+
+        //this function is called to initialize the states above
         this.createStates(); 
 
     }
-
+    
+    //INTIALIZES THE MAZEDOMAIN OBJ WHEN THE CONSTRUCTOR IS CALLED
     createStates(){
         //create the state object for the initial & goal cells that are contained w/in board obj
         let initialCell = this.board.start;
         let goalCell = this.board.goal; 
+
+        console.log(initialCell); 
+        console.log(goalCell); 
 
         let initialState = new MazeState(JSON.stringify(initialCell.coords), initialCell); 
         let goalState = new MazeState(JSON.stringify(goalCell.coords), goalCell)

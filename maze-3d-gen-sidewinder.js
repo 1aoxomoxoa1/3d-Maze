@@ -74,8 +74,8 @@ class Sidewinder3dGen extends Maze3dGenerator{
         //start & finish are like [2, 0, 1]
         let start = [Math.floor(Math.random() * this.levels), Math.floor(Math.random() * this.n), Math.floor(Math.random() * this.n)]
         let finish = [Math.floor(Math.random() * this.levels), Math.floor(Math.random() * this.n), Math.floor(Math.random() * this.n)]
-        console.log(start);
-        console.log(finish);
+        // console.log(start);
+        // console.log(finish);
 
         //set the start and end properties
         board[start[0]][start[1]][start[2]].start = true

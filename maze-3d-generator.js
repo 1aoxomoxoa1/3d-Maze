@@ -64,7 +64,6 @@ class Maze3dGenerator{
                 level[y] = row;
             }
 
-            console.log(level);
             board[z] = level; 
         }
 
