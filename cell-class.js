@@ -4,8 +4,8 @@ class Cell{
         right: 1, //RIGHT SAME LEVEL
         forward: 2, //UP SAME LEVEL
         backward: 3, //DOWN SAME LEVEL
-        up: 4, //UP A LEVEL
-        down: 5 //DOWN A LEVEL
+        up: 4, //UP A LEVEL (+1)
+        down: 5 //DOWN A LEVEL (-1)
     }
 
     constructor(coordsList){ 

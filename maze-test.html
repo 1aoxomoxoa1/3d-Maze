@@ -6,9 +6,60 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Messing with Maze</title>
     <script src="maze-test.js" type="module"></script>
+    <link rel="stylesheet" href="maze-style.css">
 </head>
 <body>
     
-    
+
+    <section id="flex">
+        <section id="user-options">
+            <label for="name">Name: </label>
+            <input type="text" id="name" name="name">
+            <br>
+            <label for="rows">Rows & Cols: </label>
+            <input type="text" id="rows" name="rows">
+            <br>
+            <label for="levels">Levels: </label>
+            <input type="text" id="levels" name="levels">
+            <br>
+            <input type="submit" value="Start New Game" id="new-game" class="form-btn">
+            <input type="submit" value="Reset Position" id="reset" class="form-btn">
+            <br>
+            <br>
+            <label for="algo">Search Algo: </label>
+            <select name="algo" id="algo">
+                <option value="dfs">DFS</option>
+                <option value="bfs">BFS</option>
+                <option value="a-star">A*</option>
+            </select>
+            <br>
+            <input type="submit" value="Solve Maze" id="solve" class="form-btn">
+            <br>
+            <br>
+            <h4>Directions: </h4>
+            <p> ↑ (up arrow): move character up same level </p>
+            <p> ← (left arrow): move character left </p>
+            <p> → (right arrow): move character right </p>
+            <p> ↓ (down arrow): move character down same level </p>
+            <p> w (key): move character up  +1 level</p>
+            <p> s (key): move character down -1 level</p>
+            <br>
+            <h5 id="error-msg"></h5>
+
+        </section>
+
+        <section id="maze-player">
+            <div id="maze-container">
+
+
+            </div>
+        </section>
+
+    </section>
+
+    <p id="output"> </p>
+
+    <script src="handling-site-ui/handle-site.js" type="module"></script>
+
 </body>
 </html>

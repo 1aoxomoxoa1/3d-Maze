@@ -1,0 +1,50 @@
+
+/* styling the user form   */
+#flex{ 
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#user-options{
+    margin: 40px;
+    width: 30vw;
+}
+
+#user-options > *{ 
+    margin: 10px;
+}
+
+.form-btn{
+    margin-left: 184px;
+}
+
+#user-options > label{
+    width: 150px;
+    display: inline-block;
+}
+
+/* styling the portion for the maze */
+#maze-player{
+    border: 5 px solid black;
+    margin: 20px;
+    width: 45vw;
+    aspect-ratio: 1 / 1;
+
+}
+
+
+@media (max-width: 1100px) {
+    #maze-player{
+        display: block;
+        margin: 20px;
+        width: 65vw;
+        aspect-ratio: 1 / 1;
+    }
+}
+
+#maze-container{ 
+    background-color: yellow;
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}

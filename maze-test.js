@@ -25,4 +25,4 @@ console.log("SIDEWINDER MAZE GENERATION TIME: ")
 console.log(sideWinderTester.measureAlgorithmTime()) 
 
 let searchDemo = new SearchDemo(); 
-searchDemo.run(7, 7);
+searchDemo.run(3, 5);
