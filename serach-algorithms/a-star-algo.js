@@ -17,15 +17,21 @@ class AStar extends SearchAlgo{
     //  * @param {*} mazeDomain -- maze search problem that we are searching through
     //  * @returns solution {array} -- list containing indexes on path found by search to goal
     //  */
-    search(mazeDomain){
+    search(mazeDomain, currentState = undefined){
         //set the maze domain in the AStar obj instance 
         this.mazeDomain = mazeDomain;
 
         let frontier = new MinHeap();
         let visited = new Set(); 
+        let initialNode; 
 
         //make initial node and insert into priority queue 
-        let initialNode = new Node(undefined, mazeDomain.initialState, "intial", 0 + this.heuristic(mazeDomain.initialState));
+        if(currentState === undefined || currentState.key === mazeDomain.initialState.key){
+            initialNode = new Node(undefined, mazeDomain.initialState, "intial", 0 + this.heuristic(mazeDomain.initialState));
+        }else{
+            initialNode = new Node(undefined, currentState, "intial", 0 + this.heuristic(mazeDomain.initialState));
+        }
+
         frontier.insert(initialNode);
 
         while(frontier.size !== 0){

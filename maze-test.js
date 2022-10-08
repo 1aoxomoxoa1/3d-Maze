@@ -12,17 +12,17 @@ import Sidewinder3dGen from "./maze-3d-gen-sidewinder.js";
 // console.log(newMaze.board);
 // console.log("start: " + newMaze.board.start);
 
-let simpleMazeAlgoTester = new SimpleMaze3dGenerator(20, 20);
-console.log("SIMPLE MAZE GENERATION TIME: ") 
-console.log(simpleMazeAlgoTester.measureAlgorithmTime()) 
+// let simpleMazeAlgoTester = new SimpleMaze3dGenerator(20, 20);
+// console.log("SIMPLE MAZE GENERATION TIME: ") 
+// console.log(simpleMazeAlgoTester.measureAlgorithmTime()) 
 
-let dfsMazeTester = new DFSMaze3dGenerator(20, 20);
-console.log("DFS MAZE GENERATION TIME: ") 
-console.log(dfsMazeTester.measureAlgorithmTime()) 
+// let dfsMazeTester = new DFSMaze3dGenerator(5, 3);
+// console.log("DFS MAZE GENERATION TIME: ") 
+// console.log(dfsMazeTester.measureAlgorithmTime()) 
 
-let sideWinderTester = new Sidewinder3dGen(20, 20); 
-console.log("SIDEWINDER MAZE GENERATION TIME: ") 
-console.log(sideWinderTester.measureAlgorithmTime()) 
+// let sideWinderTester = new Sidewinder3dGen(20, 20); 
+// console.log("SIDEWINDER MAZE GENERATION TIME: ") 
+// console.log(sideWinderTester.measureAlgorithmTime()) 
 
 let searchDemo = new SearchDemo(); 
 searchDemo.run(3, 5);

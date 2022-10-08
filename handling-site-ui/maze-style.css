@@ -27,11 +27,22 @@
 #maze-player{
     border: 5 px solid black;
     margin: 20px;
-    width: 45vw;
+    width: 40vw;
     aspect-ratio: 1 / 1;
 
 }
 
+#floor-red{
+    color: red;
+}
+
+#winner{
+    flex-basis: 100%;
+    text-align: center;
+    margin-top: 40%;
+    font-size: 3em;
+    color: lightcyan;
+}
 
 @media (max-width: 1100px) {
     #maze-player{
@@ -43,8 +54,15 @@
 }
 
 #maze-container{ 
-    background-color: yellow;
     height: 100%;
     display: flex;
     flex-wrap: wrap;
+}
+
+.normal{
+    background-color: yellow;
+}
+
+.game-over{
+    background-color: black;
 }

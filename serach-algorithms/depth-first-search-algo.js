@@ -10,15 +10,22 @@ class DepthFirstSearch extends SearchAlgo{
         this.nodesVisited = undefined;
     }   
 
-    search(mazeDomain){
+    search(mazeDomain, currentState = undefined){
         
         //frontier stores Nodes
         //visited stores states that we have visited (popped and gotten neighbors for)
         let frontier = []; 
         let visited = new Set(); 
 
+        let initialNode;
+
         //Node(parentState, currState, action to get there, pathCost)
-        let initialNode = new Node(undefined, mazeDomain.initial, "initial");
+        if(currentState === undefined || currentState.key === mazeDomain.initialState.key){
+            initialNode = new Node(undefined, mazeDomain.initialState, "intial");
+        }else{
+            initialNode = new Node(undefined, currentState, "intial");
+        }
+
         frontier.push(initialNode);
         
         //while frontier is not empty

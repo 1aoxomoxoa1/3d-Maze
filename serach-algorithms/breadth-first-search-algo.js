@@ -15,16 +15,23 @@ class BreadthFirstSearch extends SearchAlgo{
     //  * @param {*} mazeDomain -- maze search problem that we are searching through
     //  * @returns solution {array} -- list containing indexes on path found by search to goal
     //  */
-    search(mazeDomain){
+    search(mazeDomain, currentState = undefined){
         //use the properties of the mazeDomain to call successor and convert moves to tup 
          
         //frontier stores Nodes
         //visited stores states that we have visited (popped and gotten neighbors for)
         let frontier = []; 
         let visited = new Set(); 
+        let initialNode;
 
         //Node(parentState, currState, action to get there, pathCost)
-        let initialNode = new Node(undefined, mazeDomain.initial, "initial");
+        //make initial node and insert into priority queue 
+        if(currentState === undefined || currentState.key === mazeDomain.initialState.key){
+            initialNode = new Node(undefined, mazeDomain.initialState, "intial");
+        }else{
+            initialNode = new Node(undefined, currentState, "intial");
+        }
+
         frontier.push(initialNode);
         
         //while frontier is not empty

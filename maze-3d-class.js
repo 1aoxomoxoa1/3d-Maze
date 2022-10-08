@@ -4,10 +4,16 @@ import Sidewinder3dGen from "./maze-3d-gen-sidewinder.js";
 
 class Maze3d{
 
-    // "dfs" for dfs || "sidewinder" for sidewinder || "simple" for simple
+    // //**
+    //  * 
+    //  * @param {int} levels -- number of levels in board
+    //  * @param {int} n -- number of rows and cols in board 
+    //  * @param {*} algo -- "dfs" || "sidewinder" || "simple"
+    //  */
     constructor(levels, n, algo){
         //mazeGenerator will generate the board (matrix) within the constructor
         //this.board will also have properties .start and .goal with the coords 
+
         if(algo === "dfs"){
             let mazeGenerator = new DFSMaze3dGenerator(levels, n);
             this.board = mazeGenerator.generate();

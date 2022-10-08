@@ -16,10 +16,12 @@ class Sidewinder3dGen extends Maze3dGenerator{
         this.n = n; 
     }
 
-    generateSidewinder(){
+    generate(){
+
 
         let board = new Array(this.levels).fill(0);
 
+        //make board of all zeros
         for(let z = 0; z < this.levels; z++){
 
             //start with level 
@@ -42,7 +44,7 @@ class Sidewinder3dGen extends Maze3dGenerator{
         }
 
         
-
+        //iterate over all the cells and set moves arr to falses
         for(let z = 0; z < this.levels; z++){
             for(let y = 0; y < this.n; y++){
                 for(let x = 0; x < this.n; x++){

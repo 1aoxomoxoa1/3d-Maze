@@ -4,12 +4,14 @@ class User{
         this.currCoords = initialCoords;
         this.initialCoords = initialCoords;
         this.mazeObj = mazeObj;
+        this.gameOver = false; 
     }
 
-    //**
-    //  * 
-    //  * @param {str} direction -- representing desired directional move "left" "right" "forward" "backward" "up" "down"
-    //  */
+   //**
+    // * 
+    // * @param {str} keyDirection 
+    // * @returns (str) errorMessage {undefined} move mad succesfully {bool} true if game over
+    // */
     moveUser(keyDirection){
         let currCell = this.mazeObj.board[this.currCoords[0]][this.currCoords[1]][this.currCoords[2]];
         let newCoords;
@@ -21,8 +23,12 @@ class User{
             if(currCell.moves[0] === true){
                 newCoords = [...this.currCoords];
                 newCoords[2] -= 1; 
+                if(this.isGameOver(newCoords)){//if game is oveer
+                    return true;
+                }
                 this.swapSameFloor(this.currCoords, newCoords)
                 this.currCoords = newCoords; 
+                
             }else{
                 return "Can't move left..."
             }
@@ -30,8 +36,11 @@ class User{
             if(currCell.moves[1] === true){
                 newCoords = [...this.currCoords];
                 newCoords[2] += 1; 
+                if(this.isGameOver(newCoords)){//if game is oveer
+                    return true;
+                }
                 this.swapSameFloor(this.currCoords, newCoords)
-                this.currCoords = newCoords; 
+                this.currCoords = newCoords;
             }else{
                 return "Can't move right..."
             }
@@ -39,8 +48,11 @@ class User{
             if(currCell.moves[2] === true){
                 newCoords = [...this.currCoords];
                 newCoords[1] -= 1; 
+                if(this.isGameOver(newCoords)){//if game is oveer
+                    return true;
+                }
                 this.swapSameFloor(this.currCoords, newCoords)
-                this.currCoords = newCoords; 
+                this.currCoords = newCoords
             }else{
                 return "Can't move forward same level..."
             }
@@ -49,12 +61,15 @@ class User{
             if(currCell.moves[3] === true){
                 newCoords = [...this.currCoords];
                 newCoords[1] += 1; 
+                if(this.isGameOver(newCoords)){ //if game is oveer
+                    return true;
+                }
                 this.swapSameFloor(this.currCoords, newCoords)
                 this.currCoords = newCoords; 
             }else{
                 return "Can't move backward same level..."
             }
-        }else if(keyDirection === "w"){ //up level
+        }else if(keyDirection === "w" || keyDirection === "W"){ //up level
             if(currCell.moves[4] === true){
                 newCoords = [...this.currCoords]; 
                 newCoords[0] += 1; 
@@ -63,7 +78,7 @@ class User{
             }else{
                 return "Can't move up a floor..."
             }
-        }else if(keyDirection === "s"){ //down level
+        }else if(keyDirection === "s" || keyDirection === "S"){ //down level
             if(currCell.moves[5] === true){
                 newCoords = [...this.currCoords]; 
                 newCoords[0] -= 1; 
@@ -72,6 +87,20 @@ class User{
             }else{
                 return "Can't move down a floor..."
             }
+        }
+    }
+
+    // //** 
+    //  * FUNCTION RETURNS TRUE IF COORDS ARE ===  GAME'S GOAL COORDS
+    //  * @param {*} coords 
+    //  */
+    isGameOver(coords){
+        let goalCoords = this.mazeObj.board.goal.coords; 
+
+        if(JSON.stringify(coords) === JSON.stringify(goalCoords)){
+            return true;
+        }else{
+            return false; 
         }
     }
 

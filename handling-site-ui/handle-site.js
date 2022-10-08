@@ -1,6 +1,12 @@
 import DFSMaze3dGenerator from "../maze-3d-gen-dfs.js";
 import Maze3d from "../maze-3d-class.js"
 import User from "./user.js";
+import MazeDomain from "../maze-domain.js";
+import DepthFirstSearch from "../serach-algorithms/depth-first-search-algo.js";
+import BreadthFirstSearch from "../serach-algorithms/breadth-first-search-algo.js";
+import AStar from "../serach-algorithms/a-star-algo.js";
+import MazeState from "../state-maze.js";
+import Cell from "../cell-class.js";
 
 //handling the start game --> 
     // 1) get params from user fomr
@@ -8,9 +14,20 @@ import User from "./user.js";
     // 3)display maze in maze container using maze we get
 
 let startGameBtn = document.querySelector("#new-game");
+let resetBtn = document.querySelector("#reset");
+let solveBtn = document.querySelector("#solve");
 let userOptions = document.querySelector("#user-options");
+let isHandlerAdded = false;
+
+//globals that account for one of the user and maze
+let currentUser; 
+let currentMaze; 
 
 
+//** FUNCTION RESPONSIBLE WHEN "START GAME" BTN IS PRESSED
+//  * 
+//  * @param {*} event
+//  */
 function startGameFunction(event){
     let rows = document.querySelector("#rows").value;
     let name = document.querySelector("#name").value;
@@ -21,68 +38,177 @@ function startGameFunction(event){
    
 
     //make a new maze (each time the button is pressed)
-    let newMaze = new Maze3d(levels, rows, "dfs");
-    console.log(newMaze.toString());
+    currentMaze = new Maze3d(levels, rows, "dfs");
+    console.log(currentMaze.toString());
 
-    let startCoords = newMaze.board.start.coords; 
-    let finishCoords = newMaze.board.goal.coords;
+    let startCoords = currentMaze.board.start.coords; 
+    let finishCoords = currentMaze.board.goal.coords;
 
 
     //-------TESTING----------------
     p.textContent = `Rows: ${rows} ; `;
     p.textContent += `Name: ${name} ; `;
-    p.textContent += `Floor numbers = ${newMaze.board.length} coords -->`;
+    p.textContent += `Floor numbers = ${currentMaze.board.length} coords -->`;
 
 
     //make a user with name, initialCoords of created board
-    let user = new User(startCoords, name, newMaze);
+    currentUser = new User(startCoords, name, currentMaze);
 
     //display the Floor starting with initial first
-    displayFloor(startCoords[0], newMaze, user);
+    displayFloor(startCoords[0], currentMaze, currentUser);
 
     p.textContent += ` ${startCoords}  ${finishCoords}`;
 
 
+    //this global ensures that duplicate window 'keydown' handlers are not added
+    if(isHandlerAdded === false){
+        window.addEventListener('keydown', handleKeydowns); 
+        isHandlerAdded = true;
+    }
 
-    //add event listeners for pushing DIRECTION KEYS so the player can move the char
-    window.addEventListener('keydown', (event) => {
-        handleKeydowns(event, user);
-    }); 
+    //set event handlers for the reset and solve buttons here
+    resetBtn.addEventListener('click', () => {
+        resetPosition(currentUser);
+    })
 
+    solveBtn.addEventListener('click', () => {
+        solveMaze(currentUser, handleKeydowns); 
+    })
+
+
+    function handleKeydowns(event){
+        
+        // let key = event.key
+        let key = event.key;
+
+        //prevent default actions for the arrow keys first
+        if(key === "ArrowDown" || key === "ArrowUp" || key === "ArrowLeft" || key === "ArrowRight"){
+            event.preventDefault(); 
+        }
+        
+        //returnMessage === str "floor up" or "floor down" if we successfully move a floor up or down 
+        //returnMessage === str custom error message if move is invalid
+        //returnMessage === bool True if game is over
+        //returnMessage === undefined if arrow move is successful (graphics transition)
+        let returnMessage = currentUser.moveUser(key);
+
+        let errorDisplay = document.querySelector("#error-msg"); 
+
+        if(returnMessage === "floor up" || returnMessage === "floor down"){
+            let floorLevelToDisplay = currentUser.currCoords[0]; 
+            displayFloor(floorLevelToDisplay, currentUser.mazeObj, currentUser); 
+
+            //check if game is over when we get the the different floor
+            if(currentUser.isGameOver(currentUser.currCoords)){
+                returnMessage = true; 
+            }
+        }else if(typeof returnMessage === "string"){ //when error message
+            errorDisplay.textContent = returnMessage;
+        } 
+        
+        //checks for the end game conditions 
+        if(returnMessage === true){ 
+            endGame(currentUser, handleKeydowns);
+        }
+    }
+
+
+    function resetPosition(user){
+        user.currCoords = user.initialCoords;
+        displayFloor(user.initialCoords[0], user.mazeObj, user);
+
+        //if user is resetting from a game that is ended, add the event listeners back
+        if(user.gameOver === true){
+            window.addEventListener('keydown', handleKeydowns);
+            user.gameOver = false; 
+        }
+    }
 }
 
 
-function handleKeydowns(event, user){
-    
-    let key = event.key
+// //** THIS FUNCTION WILL GET A PATH TO SOLVE THE MAZE FOR CURRENT USER, THEN CALL ANIMATE PATH TO END
+//  * 
+//  * @param {*} currentUser 
+//  */
+function solveMaze(currentUser, fn){
+    //get the algo selected from the checkbox
+    let algoQuery = document.querySelector("#algo");
+    let algoSelection = algoQuery.options[algoQuery.selectedIndex].value;
+    let myAlgo; 
 
-    //prevent default actions for the arrow keys first
-    if(key === "ArrowDown" || key === "ArrowUp" || key === "ArrowLeft" || key === "ArrowRight"){
-        event.preventDefault(); 
+    if(algoSelection === "dfs"){
+        myAlgo = new DepthFirstSearch();
+    }else if(algoSelection === "bfs"){
+        myAlgo = new BreadthFirstSearch();
+    }else if(algoSelection === "a-star"){
+        myAlgo = new AStar();
     }
 
+    //make objects from the searchable class to solve the maze 
+    let usersMaze = currentUser.mazeObj; 
+    let mazeDomain = new MazeDomain(usersMaze);
+
+    let currentCell = usersMaze.board[currentUser.currCoords[0]][currentUser.currCoords[1]][currentUser.currCoords[2]];
+    let currentState = new MazeState(JSON.stringify(currentUser.currCoords), currentCell);
+    let solutionPath = myAlgo.search(mazeDomain, currentState);
+    animateSolution(solutionPath, currentUser, fn);
     
-    //moveUser() --> "floor up" or "floor down" if we successfully move a floor up or down 
-    //moveUser() --> custom error message if move is invalid
-    //moveUser() --> undefined if arrow move is successful
-    let returnMessage = user.moveUser(key);
+}
 
-    let errorDisplay = document.querySelector("#error-msg"); 
+//**
+//  * 
+//  * @param {array <str>} solutionPath -- array of strings containing directions
+//  */
+function animateSolution(solutionPath, currentUser, fn){
+    const directions = new Map([
+        ['left', 'ArrowLeft'],
+        ['right', 'ArrowRight'],
+        ['forward', 'ArrowUp' ],
+        ['backward', 'ArrowDown'],
+        ['up', 'w'],
+        ['down', 's'],
+    ]);
 
 
-    if(returnMessage === "floor up" || returnMessage === "floor down"){
-        let floorLevelToDisplay = user.currCoords[0]; 
-        displayFloor(floorLevelToDisplay, user.mazeObj, user); 
-    }else if(returnMessage !== undefined){
-        errorDisplay.textContent = returnMessage;
-    }
+    let i = 0;
+
+    let intervalId = setInterval(() => {
+        
+        //clear when finished
+        if(i === solutionPath.length){
+            clearInterval(intervalId);
+        }
+        
+        console.log(solutionPath[i]);
+        currentUser.moveUser(directions.get(solutionPath[i]));
+        if(solutionPath[i] === "up" || solutionPath[i] === "down"){
+            let floorLevelToDisplay = currentUser.currCoords[0]; 
+            displayFloor(floorLevelToDisplay, currentUser.mazeObj, currentUser); 
+        }
+        i++;
+    }, 500)
+    
+    
+    let endGameWait = 500 * solutionPath.length;
+
+    setTimeout(() => {
+        endGame(currentUser, fn)
+    }, endGameWait);
 
 }
 
 function displayFloor(floorNum, maze, user){ 
     let floorArr = maze.board[floorNum];
     let mazeContainer = document.querySelector("#maze-container");
+    if(mazeContainer.className === "game-over"){
+        mazeContainer.className = "normal";
+    }
 
+    //for writing the floor level above the maze
+    let displayFloorLvl = document.querySelector("#display-floor");
+    let displayNumber = document.querySelector("#floor-red");
+    displayFloorLvl.textContent = `Floor Level: `;
+    displayNumber.textContent = `${floorNum + 1}`;
 
     //if there is a floor of the maze present, remove it
     if(mazeContainer.children.length !== 0 ){
@@ -149,6 +275,7 @@ function applyCellUiStyle(div, cell, user){
         div.style.backgroundImage = "url('images/open-gate.svg')";
         div.style.backgroundRepeat = "no-repeat";
         div.style.backgroundPosition = "center";
+        div.style.backgroundSize = "contain";
     }else{
         if(moves[4] === false && moves[5] === true){
             div.style.backgroundImage = "url('images/down-arrow.svg')";
@@ -172,6 +299,47 @@ function applyCellUiStyle(div, cell, user){
         div.style.backgroundColor = "darkgrey";
     }
 }
+
+//** FUNCTION HANDLING END GAME, WILL DELETE USER THEN CALL endGameDisplay() 
+//  * 
+//  * @param {*} user 
+//  */
+function endGame(user, fn){
+
+    window.removeEventListener("keydown", fn);
+    user.gameOver = true; 
+    isHandlerAdded = false; 
+    endGameDisplay();
+}
+
+// //** FUNCTION TRANSITIONING THE MAZEE TO THE END GAME DISPLAY SCREEN, SAYING YOU WON 
+//  * 
+//  */
+function endGameDisplay(){
+
+    let mazeContainer = document.querySelector("#maze-container");
+
+    //if there is a floor of the maze present, remove it
+    if(mazeContainer.children.length !== 0 ){
+        let kids = mazeContainer.children; 
+        let numberKids = kids.length; 
+        for(let i = 0; i < numberKids; i++){
+            kids[0].remove();
+        }
+    }
+
+    //make "YOU WIN" header
+    let h3 = document.createElement("h3");
+    h3.textContent = "YOU WIN!"; 
+    h3.setAttribute("id", "winner");
+    mazeContainer.appendChild(h3);
+
+    //set mazeContainer id to game over state
+    mazeContainer.setAttribute("class", "game-over");
+    
+
+}
+
 
 
 startGameBtn.addEventListener('click', startGameFunction); 
