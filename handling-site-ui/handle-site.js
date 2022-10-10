@@ -16,12 +16,19 @@ import Cell from "../cell-class.js";
 let startGameBtn = document.querySelector("#new-game");
 let resetBtn = document.querySelector("#reset");
 let solveBtn = document.querySelector("#solve");
+let saveBtn = document.querySelector("#save-btn");
+let loadBtn = document.querySelector("#load-btn");
+let nameInput = document.querySelector("#name-load")
 let userOptions = document.querySelector("#user-options");
 let isHandlerAdded = false;
 
 //globals that account for one of the user and maze
 let currentUser; 
 let currentMaze; 
+
+
+//map for saved mazes
+let savedMazes = new Map();
 
 
 //** FUNCTION RESPONSIBLE WHEN "START GAME" BTN IS PRESSED
@@ -34,9 +41,7 @@ function startGameFunction(event){
     let levels = document.querySelector("#levels").value; 
     let p = document.querySelector("#output");
 
-
-   
-
+    
     //make a new maze (each time the button is pressed)
     currentMaze = new Maze3d(levels, rows, "dfs");
     console.log(currentMaze.toString());
@@ -65,65 +70,19 @@ function startGameFunction(event){
         window.addEventListener('keydown', handleKeydowns); 
         isHandlerAdded = true;
     }
+}
 
-    //set event handlers for the reset and solve buttons here
-    resetBtn.addEventListener('click', () => {
-        resetPosition(currentUser);
-    })
+function resetPosition(user){
+    user.currCoords = user.initialCoords;
+    displayFloor(user.initialCoords[0], user.mazeObj, user);
 
-    solveBtn.addEventListener('click', () => {
-        solveMaze(currentUser, handleKeydowns); 
-    })
-
-
-    function handleKeydowns(event){
-        
-        // let key = event.key
-        let key = event.key;
-
-        //prevent default actions for the arrow keys first
-        if(key === "ArrowDown" || key === "ArrowUp" || key === "ArrowLeft" || key === "ArrowRight"){
-            event.preventDefault(); 
-        }
-        
-        //returnMessage === str "floor up" or "floor down" if we successfully move a floor up or down 
-        //returnMessage === str custom error message if move is invalid
-        //returnMessage === bool True if game is over
-        //returnMessage === undefined if arrow move is successful (graphics transition)
-        let returnMessage = currentUser.moveUser(key);
-
-        let errorDisplay = document.querySelector("#error-msg"); 
-
-        if(returnMessage === "floor up" || returnMessage === "floor down"){
-            let floorLevelToDisplay = currentUser.currCoords[0]; 
-            displayFloor(floorLevelToDisplay, currentUser.mazeObj, currentUser); 
-
-            //check if game is over when we get the the different floor
-            if(currentUser.isGameOver(currentUser.currCoords)){
-                returnMessage = true; 
-            }
-        }else if(typeof returnMessage === "string"){ //when error message
-            errorDisplay.textContent = returnMessage;
-        } 
-        
-        //checks for the end game conditions 
-        if(returnMessage === true){ 
-            endGame(currentUser, handleKeydowns);
-        }
-    }
-
-
-    function resetPosition(user){
-        user.currCoords = user.initialCoords;
-        displayFloor(user.initialCoords[0], user.mazeObj, user);
-
-        //if user is resetting from a game that is ended, add the event listeners back
-        if(user.gameOver === true){
-            window.addEventListener('keydown', handleKeydowns);
-            user.gameOver = false; 
-        }
+    //if user is resetting from a game that is ended, add the event listeners back
+    if(user.gameOver === true){
+        window.addEventListener('keydown', handleKeydowns);
+        user.gameOver = false; 
     }
 }
+
 
 
 // //** THIS FUNCTION WILL GET A PATH TO SOLVE THE MAZE FOR CURRENT USER, THEN CALL ANIMATE PATH TO END
@@ -197,6 +156,73 @@ function animateSolution(solutionPath, currentUser, fn){
 
 }
 
+//**
+//  * 
+//  * @param {str} name -- string key for the mape where we save infor of this user
+//  */
+function saveMaze(name){
+    let copyUser = Object.assign({}, currentUser);
+    savedMazes.set(name, copyUser);
+}
+
+//**
+//  * 
+//  * @param {str} name key for the map to load the info of the user from before
+//  */
+function loadMaze(name){
+    let userCopied = savedMazes.get(name);
+    let userInstance = new User(userCopied.initialCoords, userCopied.name, userCopied.mazeObj)
+    currentUser = userInstance; 
+    currentMaze = userInstance.mazeObj;
+    displayFloor(currentUser.currCoords[0], currentMaze, currentUser);
+}
+
+// //** FUNCION HANDLES THE KEYDOWNS FOR MOVEMENT
+//  * 
+//  * @param {*} event -- the keydown event 
+//  */
+function handleKeydowns(event){
+        
+    // let key = event.key
+    let key = event.key;
+
+    //prevent default actions for the arrow keys first
+    if(key === "ArrowDown" || key === "ArrowUp" || key === "ArrowLeft" || key === "ArrowRight"){
+        event.preventDefault(); 
+    }
+    
+    //returnMessage === str "floor up" or "floor down" if we successfully move a floor up or down 
+    //returnMessage === str custom error message if move is invalid
+    //returnMessage === bool True if game is over
+    //returnMessage === undefined if arrow move is successful (graphics transition)
+    let returnMessage = currentUser.moveUser(key);
+
+    let errorDisplay = document.querySelector("#error-msg"); 
+
+    if(returnMessage === "floor up" || returnMessage === "floor down"){
+        let floorLevelToDisplay = currentUser.currCoords[0]; 
+        displayFloor(floorLevelToDisplay, currentUser.mazeObj, currentUser); 
+
+        //check if game is over when we get the the different floor
+        if(currentUser.isGameOver(currentUser.currCoords)){
+            returnMessage = true; 
+        }
+    }else if(typeof returnMessage === "string"){ //when error message
+        errorDisplay.textContent = returnMessage;
+    } 
+    
+    //checks for the end game conditions 
+    if(returnMessage === true){ 
+        endGame(currentUser, handleKeydowns);
+    }
+}
+
+// //** THIS FUNCTION DISPLAYS ONE FLOOR OF THE MAZE
+//  * 
+//  * @param {*} floorNum -- floor number to display
+//  * @param {*} maze -- maze to display
+//  * @param {*} user -- user playing currently
+//  */
 function displayFloor(floorNum, maze, user){ 
     let floorArr = maze.board[floorNum];
     let mazeContainer = document.querySelector("#maze-container");
@@ -204,11 +230,9 @@ function displayFloor(floorNum, maze, user){
         mazeContainer.className = "normal";
     }
 
-    //for writing the floor level above the maze
-    let displayFloorLvl = document.querySelector("#display-floor");
-    let displayNumber = document.querySelector("#floor-red");
-    displayFloorLvl.textContent = `Floor Level: `;
-    displayNumber.textContent = `${floorNum + 1}`;
+    //for writing the floor level next to the maze
+    let number = document.querySelector("#number");
+    number.textContent = `${floorNum + 1}`;
 
     //if there is a floor of the maze present, remove it
     if(mazeContainer.children.length !== 0 ){
@@ -237,7 +261,12 @@ function displayFloor(floorNum, maze, user){
 
 }
 
-
+//** THIS FUNCTION STYLES THE DIVS THAT MAKE UP THE CONTENTS OF THE MAZE
+//  * 
+//  * @param {*} div -- div html element
+//  * @param {*} cell -- cell from maze with data representing the maze cell
+//  * @param {*} user -- current user
+//  */
 function applyCellUiStyle(div, cell, user){
     
     //counter === 6 means cells are completely inaccessible
@@ -341,6 +370,35 @@ function endGameDisplay(){
 }
 
 
+//adding the event listeners that we need
 
 startGameBtn.addEventListener('click', startGameFunction); 
 
+resetBtn.addEventListener('click', () => {
+    resetPosition(currentUser);
+})
+
+solveBtn.addEventListener('click', () => {
+    solveMaze(currentUser, handleKeydowns); 
+})
+
+//event listeneres for save and load buttons added in
+saveBtn.addEventListener('click', () => {
+    let name = document.querySelector("#name-load").value;
+    saveMaze(name);
+})
+
+loadBtn.addEventListener('click', () =>{
+    let name = document.querySelector("#name-load").value;
+    loadMaze(name);
+})
+
+//for when the name input is in focus -- prevents bugs w other keydowns
+nameInput.addEventListener('focus', () => {
+    window.removeEventListener('keydown', handleKeydowns);
+    isHandlerAdded = false;
+})
+nameInput.addEventListener('blur', () => {
+    window.addEventListener('keydown', handleKeydowns);
+    isHandlerAdded = true;
+})

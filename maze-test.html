@@ -10,7 +10,6 @@
 </head>
 <body>
     
-
     <section id="flex">
         <section id="user-options">
             <label for="name">Name: </label>
@@ -36,6 +35,12 @@
             <input type="submit" value="Solve Maze" id="solve" class="form-btn">
             <br>
             <br>
+            <label for="save"> Name to save / load maze: </label>
+            <input type="text" id="name-load" name="name">
+            <br>
+            <input type="submit" value="Save" id="save-btn" class="form-btn">
+            <input type="submit" value="Load" id="load-btn" class="form-btn">
+
             <h4>Directions: </h4>
             <p> ↑ (up arrow): move character up same level </p>
             <p> ← (left arrow): move character left </p>
@@ -44,15 +49,18 @@
             <p> w (key): move character up  +1 level</p>
             <p> s (key): move character down -1 level</p>
             <br>
-            <h5 id="error-msg"></h5>
+            <div id="other-flex"> 
+                <h5 id="error-msg"></h5>
 
+                <div id="flex-floorlabel">
+                    <div id="floor">FLOOR</div>
+                    <div id="number"></div>
+                </div>
+            </div>
         </section>
 
         <section id="maze-player">
-            <p id="display-floor"> <p id="floor-red"></p> </p>
             <div id="maze-container" class="normal">
-
-
             </div>
         </section>
 

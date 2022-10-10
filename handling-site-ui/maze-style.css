@@ -8,6 +8,7 @@
 #user-options{
     margin: 40px;
     width: 30vw;
+    /* height: 90vh; */
 }
 
 #user-options > *{ 
@@ -27,13 +28,42 @@
 #maze-player{
     border: 5 px solid black;
     margin: 20px;
-    width: 40vw;
+    height: 80vh;
     aspect-ratio: 1 / 1;
-
+    background-color: darkgray;
+    border: 5px solid black;
+}
+#other-flex{
+    display: flex;
+    gap: 20px;
 }
 
-#floor-red{
-    color: red;
+#flex-floorlabel {
+    height: 50px;
+    width: 50%;
+    display: flex;
+    padding: 10px;
+    border-radius: 40px;
+    border: 2px solid black;
+    background-color: red;
+}
+
+#flex-floorlabel > * {
+    flex: 1;
+    margin-top: 8px;
+    margin-left: 8px;
+    font-size: 1.75em;
+}
+
+#floor{
+    text-align: center;
+    color: white;
+}
+
+#number{
+    background-color: red;
+    text-align: center;
+    color: white;
 }
 
 #winner{
@@ -45,6 +75,10 @@
 }
 
 @media (max-width: 1100px) {
+
+    #flex{
+        display: block;
+    }
     #maze-player{
         display: block;
         margin: 20px;
@@ -58,6 +92,7 @@
     display: flex;
     flex-wrap: wrap;
 }
+
 
 .normal{
     background-color: yellow;
