@@ -49,20 +49,12 @@ function startGameFunction(event){
     let startCoords = currentMaze.board.start.coords; 
     let finishCoords = currentMaze.board.goal.coords;
 
-
-    //-------TESTING----------------
-    p.textContent = `Rows: ${rows} ; `;
-    p.textContent += `Name: ${name} ; `;
-    p.textContent += `Floor numbers = ${currentMaze.board.length} coords -->`;
-
-
     //make a user with name, initialCoords of created board
     currentUser = new User(startCoords, name, currentMaze);
 
     //display the Floor starting with initial first
     displayFloor(startCoords[0], currentMaze, currentUser);
 
-    p.textContent += ` ${startCoords}  ${finishCoords}`;
 
 
     //this global ensures that duplicate window 'keydown' handlers are not added
