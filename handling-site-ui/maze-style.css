@@ -5,6 +5,10 @@
     flex-wrap: wrap;
 }
 
+#instructions{
+    color: red;
+}
+
 #user-options{
     margin: 40px;
     width: 30vw;
